@@ -17,7 +17,7 @@ AUDIO_FOLDERS = [
     'happy', 'house', 'learn', 'left', 'marvin', 'nine',
     'no', 'off', 'on', 'one', 'right', 'seven', 'sheila',
     'six', 'stop', 'three', 'two', 'up', 'visual', 'wow',
-    'yes', 'zero'
+    'yes', 'zero', 'noise'
 ]
 
 def generate_spec(filename):
@@ -44,7 +44,7 @@ def generate_all():
             i += 1
         curr_spect = np.array(curr_spect)
         np.save("specs_vectors/" + folder + ".npy", curr_spect)
-            
+ 
 
 
 if __name__ == '__main__':
