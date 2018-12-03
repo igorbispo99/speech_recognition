@@ -8,7 +8,7 @@
 \usepackage{verbatim}
 
 
-\title{Projeto Demonstrativo 6\\ Reconhecimento de Fala a partir de espectrogramas utilizando de CNN projetada para classificar objetos}
+\title{Projeto Demonstrativo 6\\ Reconhecimento de Fala a Partir de Espectrograma usando MobileNetV2}
 
 % Enter the paper's authors in order
 % \addauthor{Name}{email/homepage}{INSTITUTION_CODE}
@@ -54,6 +54,15 @@ O Reconhecimento de Fala, também conhecido como: \textit{automatic speech recog
 
 Neste trabalho, transportamos o problema de reconhecimento de áudio para o âmbito de classificação de imagens, uma área muito explorada em Visão Computacional. A análise acústica tem a espectrografia do som como uma de suas principais ferramentas. O espectrograma pode ser definido como uma mostragem dinâmica da densidade de energia por meio do escurecimento ou coloração do traçado (as cores indicam a intensidade de volume), as faixas de frequência no eixo vertical e o tempo no eixo horizontal. Sua representação mostra estrias horizontais, denominadas harmônicos. Um exemplo de espectrograma pode ser vista na Figura ~\ref{espc}. A classificação das imagens foram obtidas através de Rede Neural Convolucional (CNN), mais precisamente, a arquitetura MobileNetV2 ~\cite{mobilenets}.
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.4]{imagens/spect.png} 
+\caption{Espectrograma (fala de ``backward'')}
+\label{espc}
+\end{figure}
+
+\newpage
+
 O conjunto de dados usados para testar, Speech Commands Data Set - versão 0.01, tem um vocabulário relativamente pequeno de 30 ~\cite{speechcommandsv2}. O conjunto compõe-se de falas de 20 palavras de comando gravadas por uma variedade de falantes diferentes:  "Yes", "No", "Up", "Down", "Left", "Right", "On", "Off", "Stop", "Go", "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", e "Nine". Para ajudar a distinguir palavras não reconhecidas, há também dez palavras auxiliares:  "Bed", "Bird", "Cat", "Dog", "Happy", "House", "Marvin", "Sheila", "Tree", e "Wow".
 
 Já o conjunto de dados usados para treinar, Speech Commands Data Set - versão 0.02  ~\cite{speechcommandsv2}, alem das palavras presentes na versão 0.01, acrescenta as palavras ``backward'', ``follow'', ``forward'', ``learn'' e ``visual''.
@@ -68,17 +77,11 @@ Algumas das ferramentas auxiliares principais foram OpenCV ~\cite{openCV} para t
 Para cada audio da base da dados, foram gerados espectrogramas, como visto na figura ~\ref{espc}. O tamanho de cada imagem foi redimensionada para 96x96 afim de diminuir a dimensionalidade do problema. O moedlo de rede usado requer imagem coloridas (RGB), portanto, criamos, para cada imagem, criamos duas novas imagens iguais e as combinamos em uma única imagem de três canais.
 
 
-\begin{figure}[ht]
-\centering
-\includegraphics[scale=0.4]{imagens/spect.png} 
-\caption{Espectrograma (fala de ``backward'')}
-\label{espc}
-\end{figure}
 
 \subsection*{Arquitetura da Rede}
 
 A rede convolucional MobileNetV2 ~\cite{mobilenets}, proposta por pesquisadores da Google, foi a arquitetura para a CNN usada neste trabalho. Essa rede é conhecida por ser de alta eficiência 
-e facilidade no treinamento e, além disso, usa convoluções separáveis em profundidade.
+e facilidade no treinamento e, além disso, usa convoluções separáveis em profundidade. São ao todo 88 camadas e 3,605,603 parâmetros.
 
 Uma convolução separável em profundidade é composta por duas operações: uma convolução em profundidade e uma convolução pontual. A convolução em profundidade mapeia uma única convolução em cada canal de entrada separadamente, ou seja, aplica um único filtro a cada canal de entrada (camada  separada para filtragem). Portanto, seu número de canais de saída é o mesmo do número de canais de entrada. Seu custo computacional é $Df^2 \cdot M \cdot Dk^2$, sendo $Df$ a dimensão do recurso de entrada, $M$ e $N$ o número de canais de entrada e saída e $Dk$ o tamanho do kernel. A Figura \ref{MN} (a) e (b)
 mostra a diferença entre a Convolução normal e a separável. Já a pontual, Figura \ref{MN} (b) é uma convolução com um tamanho de kernel de 1x1 que combina os recursos criados pela convolução em profundidade (camada separada para combinação), com custo computacional de $M \cdot N \cdot Df^2$.
@@ -114,30 +117,47 @@ Os detalhes da arquiterura da rede são mostrados no arquivo Anexo.
 
 Conforme mostrado no relatório de classificação, o modelo apresenta excelente
 desempenho no conjunto de teste com apenas 10 épocas (totalizando
-aproximadamente 2h de treino).
+aproximadamente 2h de treino) e tem uma acurácia média entre 96 e 97\%.
 
 Além disso, o modelo é capaz de classificar corretamente áudios extraídos em
 tempo real a partir de um microfone ligado ao computador, mesmo em casos
-de áudio com alto grau de ruído como mostrado no espectrograma a seguir ~\ref{audio_mic}.
-
-\begin{figure}[ht]
-\centering
-\includegraphics[scale=0.5]{imagens/mic_pc.png} 
-\caption{Espectrograma classificado corretamente como "right" com 99\% de confiança}
-\label{audio_mic}
-\end{figure}
-
-Par
-
-\begin{figure}[ht]
-\centering
-\includegraphics[scale=0.5]{imagens/stitched_filters_3x3.png} 
-\caption{Filtros aplicados na Convolução em Profundidade}
-\end{figure}
+de áudio com alto grau de ruído como mostrado no espectrograma a seguir ~\ref{audiomic}.
 
 \newpage
 
-\begin{table}[ht]
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.2]{imagens/micpc.png} 
+\caption{Espectrograma classificado corretamente como "right" com 99\% de confiança}
+\label{audiomic}
+\end{figure}
+
+Para fins de visualização, foram gerados espectrogramas que maximizassem a ativação dos
+filtros da primeira camada de convolução utilizando o algoritmo gradiente ascendente.
+
+Conforme poder ser visto na comparação, os padrões formados são bastante diferentes 
+dos vistos em filtros treinados para reconhecer objetos. 
+Enquanto os filtros para objetos ~\ref{fobj} apresentam um padrão mais orgânico e natural,
+os filtros para classificar espectrogramas são mais ruidosos e com padrões
+sintéticos ~\ref{fspeech}.
+
+
+\begin{figure}[htbp]
+\includegraphics[scale=3]{imagens/filtrospeech.png} 
+\centering
+\caption{Filtro aplicado na Convolução em Profundidade para espectrograma}
+\label{fspeech}
+\end{figure}
+
+\begin{figure}[htbp]
+\includegraphics[scale=4]{imagens/filtroobj.png} 
+\centering
+\caption{Filtro aplicado na Convolução para reconhecimento de objetos}
+\label{fobj}
+\end{figure}
+
+
+\begin{table}[htbp]
 \centering
 \begin{tabular}{|c|c|c|c|c|}
 \hline
@@ -174,7 +194,6 @@ Par
         zero &      0.97  &    0.95  &    0.96 &      500 \\ \hline
 
    micro avg &      0.97   &   0.92  &    0.96 &    14500 \\ 
-   macro avg &      0.80   &   0.79  &    0.80 &    14500 \\ 
 weighted avg &      0.97   &   0.96  &    0.96 &    14500 \\ \hline
 \end{tabular}
 \caption{Relatório de Classificação}
@@ -182,21 +201,32 @@ weighted avg &      0.97   &   0.96  &    0.96 &    14500 \\ \hline
 
 \begin{figure}[ht]
 \centering
-\includegraphics[scale=0.7]{imagens/mtxc.png} 
+\includegraphics[scale=0.6]{imagens/mtxc.png} 
 \caption{Matriz de Confusão - 10 epochs}
 \end{figure}
 
-\subsubsection*{Comparação com pesos treinados com ImageNet}
+\subsubsection*{Comparação Pesos Aleatórios X Pesos Pré-Treinados com ImageNet}
 
-Usamos pesos pré-treinados com o ImageNet ~\cite{imagenet} para comparação. Apesar da base de dados do ImageNet não ter características semelhantes às imagens de espectrograma, pois contém mais de 3 milhões de imagens aleatórias sendo nenhuma espectrograma, o resultado foi indiferente. Além disso, a convergência é mais rápida, atingindo o resultado com 2 epochs a menos que o método anterior.
+Como a MobileNetV2 é otimizada para reconhecimento de objetos, foram utilizados 
+dois cenários de treinos distintos. O primeiro com pesos pré-treinados com o dataset
+ImageNet ~\cite{imagenet} e o outro com pesos iniciados aleatoriamente para comparação. 
+
+Apesar da base de dados do ImageNet não ter características semelhantes às imagens de espectrograma,
+tanto a acurácia inicial (na época 0) quanto acurácia final não apresentaram diferenças
+entre os dois cenários de treino.
+
+Contudo, a convergência é mais rápida quando são utilizados os pesos da ImageNet,
+atingindo o resultado com 2 epochs a menos do que com pesos aleatórios.
 
 
 \section{Conclusão}
 
-Neste projeto foi abordado o problema de reconhecimento de fala aplicando o modelo MobileNet nos dados de imagens formados pelos espectrogramas do banco de dados Speech Commands Data Set. O método foi implementado com sucesso, com 0.97 \% de acurácia.
-de precisão. Além disso, destacamos a indiferença entre o método treinando os pesos e o método com os pesos pré treinados com ImageNet, apesar da aleatóriedade deste banco de imagens, no que se trata de acurácia. No entanto, neste segundo método, a convergência é mais rapida.
+Neste projeto foi abordado o problema de reconhecimento de fala aplicando o modelo MobileNetV2 em espectrogramas gerador a patir do banco de dados Speech Commands Data Set. O método foi implementado com sucesso, com 97\% de acurácia e é rápido o suficiente para ser executado em tempo real.
+Além disso, destacamos a indiferença entre o método treinando os pesos e o método com os pesos pré treinados com ImageNet, apesar da aleatóriedade deste banco de imagens, no que se trata de acurácia. No entanto, neste segundo método, a convergência é mais rapida.
+Por fim, foi verificado que o uso de CNNs em reconhecimento de fala a partir de
+espectrogramas é bastante eficiente e, sem dúvida, está entre os métodos de maior
+taxa de acurácia da atualidade.
 
-\newpage
 \bibliography{refs}
 \end{document}
 
