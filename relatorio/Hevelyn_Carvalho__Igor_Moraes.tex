@@ -8,7 +8,7 @@
 \usepackage{verbatim}
 
 
-\title{Projeto Demonstrativo 6\\ Ultilização de uma CNN projetada para classificar imagens no contexto de reconhecimento de fala}
+\title{Projeto Demonstrativo 6\\ Reconhecimento de Fala a partir de espectrogramas utilizando de CNN projetada para classificar objetos}
 
 % Enter the paper's authors in order
 % \addauthor{Name}{email/homepage}{INSTITUTION_CODE}
@@ -24,7 +24,7 @@
   Brasília-DF, CEP 70910-900, Brazil,
 }
 
-\runninghead{Hevelyn, Igor}{Computer Vision Assignment 5 \today}
+\runninghead{Hevelyn, Igor}{Computer Vision Assignment 6 \today}
 
 % Any macro definitions you would like to include
 % These are not defined in the style file, because they don't begin
@@ -42,7 +42,7 @@
 
 \begin{abstract}
 
-O reconhecimento de fala é uma tecnologia que pode reconhecer palavras faladas, que podem ser convertidas em texto. Apresentamos um modelo eficiente para reconhecimento de fala usando a arquitetura MobileNet ~\cite{mobilenets} a qual aplica convoluções separáveis em profundidade. Apresentamos testes obtidos pela rede treinada com forte desempenho e comparamos com os resultados obtidos pela rede com pesos pré-treinados com o ImageNet.
+O reconhecimento de fala é uma tecnologia que procura identificar palavras faladas em um áudio e convertê-las em texto. Foi construído um modelo eficiente para reconhecimento de fala em tempo real usando a aquitetura MobileNetv2 ~\cite{mobilenets}. Apresentaremos resultados obtidos pela rede treinada a partir de pesos aleatórios e a partir de pesos pré-treinados na classificação de objetos com o dataset ImageNet.
 
 \end{abstract}
 
@@ -50,13 +50,13 @@ O reconhecimento de fala é uma tecnologia que pode reconhecer palavras faladas,
 \section{Introdução}
 \label{sec:intro}
 
-O Reconhecimento de Fala, também conhecido como reconhecimento automático de fala (automatic speech recognition - ASR), reconhecimento de fala por computador ou fala para texto (computer speech recognition or speech to text - STT), é um subcampo de Processamento de Linguagem Natural que se concentra na capacidade e nas limitações de uma máquina em entender a linguagem dos seres humanos. O processo consiste em mapear um entrada de áudio para alguma palavra existente em um certo vocabulário. 
+O Reconhecimento de Fala, também conhecido como: \textit{automatic speech recognition} (ASR), \textit{computer speech recognition} ou \~textit{speech to text} (STT), é um subcampo de Processamento de Linguagem Natural que se concentra na capacidade e nas limitações de uma máquina em entender a linguagem dos seres humanos. O processo consiste em mapear um entrada de áudio para alguma palavra existente em um certo vocabulário. 
 
-Neste trabalho, transportamos o problema de reconhecimento de áudio para o âmbito de classificação de imagens, uma área muito explorada em Visão Computacional. A análise acústica tem a espectrografia do som como uma de suas principais ferramentas. O espectrograma pode ser definido como uma mostragem dinâmica da densidade de energia por meio do escurecimento ou coloração do traçado (as cores indicam a intensidade de volume), as faixas de frequência no eixo vertical e o tempo no eixo horizontal. Sua representação mostra estrias horizontais, denominadas harmônicos. Um exemplo de espectrograma pode ser vista na Figura ~\ref{espc}. A classificação das imagens foram obtidas através de Rede Neural Convolucional (CNN), mais precisamente, a arquitetura MobileNet ~\cite{mobilenets}.
+Neste trabalho, transportamos o problema de reconhecimento de áudio para o âmbito de classificação de imagens, uma área muito explorada em Visão Computacional. A análise acústica tem a espectrografia do som como uma de suas principais ferramentas. O espectrograma pode ser definido como uma mostragem dinâmica da densidade de energia por meio do escurecimento ou coloração do traçado (as cores indicam a intensidade de volume), as faixas de frequência no eixo vertical e o tempo no eixo horizontal. Sua representação mostra estrias horizontais, denominadas harmônicos. Um exemplo de espectrograma pode ser vista na Figura ~\ref{espc}. A classificação das imagens foram obtidas através de Rede Neural Convolucional (CNN), mais precisamente, a arquitetura MobileNetV2 ~\cite{mobilenets}.
 
 O conjunto de dados usados para testar, Speech Commands Data Set - versão 0.01, tem um vocabulário relativamente pequeno de 30 ~\cite{speechcommandsv2}. O conjunto compõe-se de falas de 20 palavras de comando gravadas por uma variedade de falantes diferentes:  "Yes", "No", "Up", "Down", "Left", "Right", "On", "Off", "Stop", "Go", "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", e "Nine". Para ajudar a distinguir palavras não reconhecidas, há também dez palavras auxiliares:  "Bed", "Bird", "Cat", "Dog", "Happy", "House", "Marvin", "Sheila", "Tree", e "Wow".
 
-Já o conjunto de dados usados para treinar, Speech Commands Data Set - versão 0.02  ~\cite{speechcommandsv2}, inclui as palavras ``backward'', ``follow'', ``forward'', ``learn'' e ``visual''.
+Já o conjunto de dados usados para treinar, Speech Commands Data Set - versão 0.02  ~\cite{speechcommandsv2}, alem das palavras presentes na versão 0.01, acrescenta as palavras ``backward'', ``follow'', ``forward'', ``learn'' e ``visual''.
 
 Algumas das ferramentas auxiliares principais foram OpenCV ~\cite{openCV} para tratamento de imagens e bibliotecas do Python: Numpy ~\cite{numpy} para manipulação de tensores (imagens), a API Keras para desenvolvimento da rede ~\cite{keras} e o módulo signal do SciPy ~\cite{scipy} para geração dos espectrogramas.
 
@@ -65,7 +65,7 @@ Algumas das ferramentas auxiliares principais foram OpenCV ~\cite{openCV} para t
 
 \subsection*{Pré-processamento}
 
-Para cada audio da base da dados, foram gerados espectrogramas, como visto na figura ~\ref{espc}. O tamanho de cada imagem foi redimensionada para 96x96 afim de diminuir a dimensão do problema. O moedlo de rede usado requer imagem coloridas (RGB), portanto, criamos, para cada imagem, criamos duas novas imagens iguais e as combinamos em uma única imagem de três canais.
+Para cada audio da base da dados, foram gerados espectrogramas, como visto na figura ~\ref{espc}. O tamanho de cada imagem foi redimensionada para 96x96 afim de diminuir a dimensionalidade do problema. O moedlo de rede usado requer imagem coloridas (RGB), portanto, criamos, para cada imagem, criamos duas novas imagens iguais e as combinamos em uma única imagem de três canais.
 
 
 \begin{figure}[ht]
@@ -77,7 +77,8 @@ Para cada audio da base da dados, foram gerados espectrogramas, como visto na fi
 
 \subsection*{Arquitetura da Rede}
 
-MobileNet ~\cite{mobilenets}, proposta pelo Google, foi a arquitetura para a CNN usada neste trabalho a qual usa convoluções separáveis em profundidade.
+A rede convolucional MobileNetV2 ~\cite{mobilenets}, proposta por pesquisadores da Google, foi a arquitetura para a CNN usada neste trabalho. Essa rede é conhecida por ser de alta eficiência 
+e facilidade no treinamento e, além disso, usa convoluções separáveis em profundidade.
 
 Uma convolução separável em profundidade é composta por duas operações: uma convolução em profundidade e uma convolução pontual. A convolução em profundidade mapeia uma única convolução em cada canal de entrada separadamente, ou seja, aplica um único filtro a cada canal de entrada (camada  separada para filtragem). Portanto, seu número de canais de saída é o mesmo do número de canais de entrada. Seu custo computacional é $Df^2 \cdot M \cdot Dk^2$, sendo $Df$ a dimensão do recurso de entrada, $M$ e $N$ o número de canais de entrada e saída e $Dk$ o tamanho do kernel. A Figura \ref{MN} (a) e (b)
 mostra a diferença entre a Convolução normal e a separável. Já a pontual, Figura \ref{MN} (b) é uma convolução com um tamanho de kernel de 1x1 que combina os recursos criados pela convolução em profundidade (camada separada para combinação), com custo computacional de $M \cdot N \cdot Df^2$.
@@ -100,7 +101,8 @@ mostra a diferença entre a Convolução normal e a separável. Já a pontual, F
 \end{figure}
 
 
-Todas as camadas são seguidas por uma normalização em lote, batchnorm ~\cite{batch}, especificada na equação abaixo, onde $z^k$ é a camada, $E[x]$ e $V[x]$ são o primeiro e segundo epoch de x respectivamente, e  a função de ativação ReLU ~\cite{relu}, com exceção da camada final totalmente conectada que não possui não-linearidade e alimenta uma camada softmax para classificação.
+Todas as camadas são seguidas por uma normalização em lote, ~\textit{batch normalization}
+~\cite{batch}, especificada na equação abaixo, onde $z^k$ é a camada, $E[x]$ e $V[x]$ são o primeiro e segundo epoch de x respectivamente, e  a função de ativação ReLU ~\cite{relu}, com exceção da camada final totalmente conectada que não possui não-linearidade e alimenta uma camada softmax para classificação.
 
 \begin{equation}
 \tilde z ^k = \frac{z^k - E[z^k]}{\sqrt[]{V[z^k]}}
@@ -109,6 +111,23 @@ Todas as camadas são seguidas por uma normalização em lote, batchnorm ~\cite{
 Os detalhes da arquiterura da rede são mostrados no arquivo Anexo.
 
 \subsection*{Resultados}
+
+Conforme mostrado no relatório de classificação, o modelo apresenta excelente
+desempenho no conjunto de teste com apenas 10 épocas (totalizando
+aproximadamente 2h de treino).
+
+Além disso, o modelo é capaz de classificar corretamente áudios extraídos em
+tempo real a partir de um microfone ligado ao computador, mesmo em casos
+de áudio com alto grau de ruído como mostrado no espectrograma a seguir ~\ref{audio_mic}.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.5]{imagens/mic_pc.png} 
+\caption{Espectrograma classificado corretamente como "right" com 99\% de confiança}
+\label{audio_mic}
+\end{figure}
+
+Par
 
 \begin{figure}[ht]
 \centering

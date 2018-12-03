@@ -6,7 +6,7 @@ import generate_spectrogram as gs
 import matplotlib.pyplot as plt
 import cv2 as cv
 
-#os.environ["KERAS_BACKEND"] = "plaidml.keras.backend"
+os.environ["KERAS_BACKEND"] = "plaidml.keras.backend"
 
 from keras.models import load_model
 
@@ -59,9 +59,11 @@ def listen():
         label = gs.AUDIO_FOLDERS[p.argmax()]
 
         if p.max() > 0.9:
-            print("Word labed as {}".format(label))
+            print("Word labed as \"{0}\" with a confidence of {1:.3f}".format(label, p.max()))
+            cv.imwrite("out.png", r_spect.reshape((480, 640)))
 
 if __name__ == "__main__":
+    print("")
     listen()
 
 
