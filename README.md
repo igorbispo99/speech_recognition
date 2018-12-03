@@ -1,4 +1,4 @@
-#PD6 - Ultilização de uma CNN projetada para classificar imagens no contexto de reconhecimento de fala
+# PD6 - Ultilização de uma CNN projetada para classificar imagens no contexto de reconhecimento de fala
 
 Igor Bispo de Moraes = 170050432
 Hevelyn Sthefany = 170059031
@@ -19,13 +19,6 @@ O programa foi escrito em Python 3 e requer as seguinte bibliotecas:
 
 ## Execucao
 
-### Treinamento e Teste:
-
-
-
-#### É preciso estar contido no diretório principal a pasta com a base de dados. Tal base de dados pode ser .... lugar
-
-### Predição
 Para executar, vá até a pasta src e execute:
 
 python predict_live.py

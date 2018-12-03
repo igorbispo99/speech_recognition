@@ -1,0 +1,267 @@
+\documentclass{bmvc2k}
+
+%% Enter your paper number here for the review copy
+%\bmvcreviewcopy{??}
+
+% \usepackage[brazilian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{verbatim}
+
+
+\title{Projeto Demonstrativo 6\\ Anexo - Descrição da CNN}
+
+% Enter the paper's authors in order
+% \addauthor{Name}{email/homepage}{INSTITUTION_CODE}
+\addauthor{Hevelyn Sthefany Lima de Carvalho \\ 170059031}{hevelyn.sthefany@gmail.com}{1}
+\addauthor{Igor Bispo de Moraes \\ 170050432}{igor.rabbit99@gmail.com}{1}
+
+% Enter the institutions
+% \addinstitution{Name\\Address}
+\addinstitution{
+  Departamento de Ciência da Comptutação\\
+  Universidade de Brasília\\
+  Campus Darcy Ribeiro, Asa Norte\\
+  Brasília-DF, CEP 70910-900, Brazil,
+}
+
+\runninghead{Hevelyn, Igor}{Computer Vision Assignment 6 \today}
+
+% Any macro definitions you would like to include
+% These are not defined in the style file, because they don't begin
+% with \bmva, so they might conflict with the user's own macros.
+% The \bmvaOneDot macro adds a full stop unless there is one in the
+% text already.
+\def\eg{\emph{e.g}\bmvaOneDot}
+\def\Eg{\emph{E.g}\bmvaOneDot}
+\def\etal{\emph{et al}\bmvaOneDot}
+
+%-------------------------------------------------------------------------
+\begin{document}
+
+\maketitle
+
+Na seguinte tabela, considere exp = ``exped, dw = ``depthwise'', exp = ``expande'', proj = ``project''. \\
+
+Códigos:
+
+\begin{itemize}
+\item C1 = ZeroPadding2D
+\item C2 = Conv2D
+\item C3 = BatchNormalization
+\item C4 = Relu
+\item C5 = DepthwiseConvolution
+\item C6 = DepthCNN
+\end{itemize}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{|c|}
+\hline
+Total params: 3,605,603         \\ \hline
+Trainable params: 3,571,491     \\ \hline
+Non-trainable params: 34,112    \\ \hline
+\end{tabular}
+\end{table}
+
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+
+Layer (type)                  &  Output Shape         &Param  &   Connected to                     \\ \hline
+input\_1 (InputLayer)            & ( , 96, 96, 3)  &  0      &                                      \\ \hline
+Conv1\_pad C1       & ( , 97, 97, 3)  &  0      &     input\_1[0][0]                    \\ \hline
+Conv1 C2                  & ( , 48, 48, 32) &  864    &     Conv1\_pad[0][0]                  \\ \hline
+block\_Conv1 C3   & ( , 48, 48, 32) &  128    &     Conv1[0][0]                      \\ \hline
+Conv1\_relu C4               & ( , 48, 48, 32) &  0      &     bn\_Conv1[0][0]                   \\ \hline
+exp\_conv\_dw C5 & ( , 48, 48, 32) &  288    &     Conv1\_relu[0][0]                 \\ \hline
+exp\_conv\_dw\_BN C3 & ( , 48, 48, 32) &  128    &     exp\_conv\_dw[0][0]    \\ \hline
+exp\_conv\_dw\_relu C4 & ( , 48, 48, 32) &  0      &     exp\_conv\_dw\_BN[0][0] \\ \hline
+exp\_conv\_proj C2  & ( , 48, 48, 16) &  512    &     exp\_conv\_dw\_relu[0][0\\ \hline
+exp\_conv\_proj\_BN C3 & ( , 48, 48, 16) &  64     &     exp\_conv\_proj[0][0]      \\ \hline
+block\_1\_exp C2         & ( , 48, 48, 96) &  1536   &     exp\_conv\_proj\_BN[0][0]   \\ \hline
+block\_1\_exp\_BN C3 & ( , 48, 48, 96) &  384    &     block\_1\_exp[0][0]             \\ \hline
+block\_1\_exp\_relu C4      & ( , 48, 48, 96) &  0      &     block\_1\_exp\_BN[0][0]          \\ \hline
+block\_1\_pad C1     & ( , 49, 49, 96) &  0      &     block\_1\_exp\_relu[0][0]        \\ \hline
+block\_1\_dw C6 & ( , 24, 24, 96) &  864    &     block\_1\_pad[0][0]                \\ \hline
+block\_1\_dw\_BN C3 & ( , 24, 24, 96) &  384    &     block\_1\_dw[0][0]          \\ \hline
+block\_1\_dw\_relu C4   & ( , 24, 24, 96) &  0      &     block\_1\_dw\_BN[0][0]       \\ \hline
+block\_1\_proj C2        & ( , 24, 24, 24) &  2304   &     block\_1\_dw\_relu[0][0]     \\ \hline
+block\_1\_proj\_BN C3 & ( , 24, 24, 24) &  96     &     block\_1\_proj[0][0]            \\ \hline
+block\_2\_exp C2         & ( , 24, 24, 144)&  3456   &     block\_1\_proj\_BN[0][0]         \\ \hline
+block\_2\_exp\_BN C3 & ( , 24, 24, 144)&  576    &     block\_2\_exp[0][0]             \\ \hline
+block\_2\_exp\_relu C4      & ( , 24, 24, 144)&  0      &     block\_2\_exp\_BN[0][0]          \\ \hline
+block\_2\_dw C6 & ( , 24, 24, 144)&  1296   &     block\_2\_exp\_relu[0][0]        \\ \hline
+block\_2\_dw\_BN C3 & ( , 24, 24, 144)&  576    &     block\_2\_dw[0][0]          \\ \hline
+block\_2\_dw\_relu C4   & ( , 24, 24, 144)&  0      &     block\_2\_dw\_BN[0][0]       \\ \hline
+block\_2\_proj C2        & ( , 24, 24, 24) &  3456   &     block\_2\_dw\_relu[0][0]     \\ \hline
+block\_2\_proj\_BN C3 & ( , 24, 24, 24) &  96     &     block\_2\_proj[0][0]            \\ \hline
+block\_2\_add (Add)               & ( , 24, 24, 24) &  0      &     block\_1\_proj\_BN[0][0]         \\ 
+                                &                    &         &    block\_2\_proj\_BN[0][0]         \\ \hline
+block\_3\_exp C2         & ( , 24, 24, 144)&  3456   &     block\_2\_add[0][0]                \\ \hline
+block\_3\_exp\_BN C3 & ( , 24, 24, 144)&  576    &     block\_3\_exp[0][0]             \\ \hline
+block\_3\_exp\_relu C4      & ( , 24, 24, 144)&  0      &     block\_3\_exp\_BN[0][0]          \\ \hline
+block\_3\_pad C1     & ( , 25, 25, 144)&  0      &     block\_3\_exp\_relu[0][0]        \\ \hline
+block\_3\_dw C6 & ( , 12, 12, 144)&  1296   &     block\_3\_pad[0][0]                \\ \hline
+block\_3\_dw\_BN C3 & ( , 12, 12, 144)&  576    &     block\_3\_dw[0][0]          \\ \hline
+block\_3\_dw\_relu C4   & ( , 12, 12, 144)&  0      &     block\_3\_dw\_BN[0][0]       \\ \hline
+block\_3\_proj C2        & ( , 12, 12, 32) &  4608   &     block\_3\_dw\_relu[0][0]     \\ \hline
+block\_3\_proj\_BN C3 & ( , 12, 12, 32) &  128    &     block\_3\_proj[0][0]            \\ \hline
+block\_4\_exp C2         & ( , 12, 12, 192)&  6144   &     block\_3\_proj\_BN[0][0]         \\ \hline
+block\_4\_exp\_BN C3 & ( , 12, 12, 192)&  768    &     block\_4\_exp[0][0]             \\ \hline
+block\_4\_exp\_relu C4      & ( , 12, 12, 192)&  0      &     block\_4\_exp\_BN[0][0]          \\ \hline
+
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|}
+
+block\_4\_dw C6 & ( , 12, 12, 192)&  1728   &     block\_4\_exp\_relu[0][0]        \\ \hline
+block\_4\_dw\_BN C3 & ( , 12, 12, 192)&  768    &     block\_4\_dw[0][0]          \\ \hline
+block\_4\_dw\_relu C4   & ( , 12, 12, 192)&  0      &     block\_4\_dw\_BN[0][0]       \\ \hline
+block\_4\_proj C2        & ( , 12, 12, 32) &  6144   &     block\_4\_dw\_relu[0][0]     \\ \hline
+block\_4\_proj\_BN C3 & ( , 12, 12, 32) &  128    &     block\_4\_proj[0][0]            \\ \hline
+block\_4\_add (Add)               & ( , 12, 12, 32) &  0      &     block\_3\_proj\_BN[0][0]         \\ 
+                                &                    &         &      block\_4\_proj\_BN[0][0]         \\ \hline
+block\_5\_exp C2         & ( , 12, 12, 192)&  6144   &     block\_4\_add[0][0]                \\ \hline
+block\_5\_exp\_BN C3 & ( , 12, 12, 192)&  768    &     block\_5\_exp[0][0]             \\ \hline
+block\_5\_exp\_relu C4      & ( , 12, 12, 192)&  0      &     block\_5\_exp\_BN[0][0]          \\ \hline
+block\_5\_dw C6 & ( , 12, 12, 192)&  1728   &     block\_5\_exp\_relu[0][0]        \\ \hline
+block\_5\_dw\_BN C3 & ( , 12, 12, 192)&  768    &     block\_5\_dw[0][0]          \\ \hline
+block\_5\_dw\_relu C4   & ( , 12, 12, 192)&  0      &     block\_5\_dw\_BN[0][0]       \\ \hline
+block\_5\_proj C2        & ( , 12, 12, 32) &  6144   &     block\_5\_dw\_relu[0][0]     \\ \hline
+block\_5\_proj\_BN C3 & ( , 12, 12, 32) &  128    &     block\_5\_proj[0][0]            \\ \hline
+block\_5\_add (Add)               & ( , 12, 12, 32) &  0      &     block\_4\_add[0][0]                \\ 
+                                &                    &         &      block\_5\_proj\_BN[0][0]        \\ \hline
+block\_6\_exp C2         & ( , 12, 12, 192)&  6144   &     block\_5\_add[0][0]                \\ \hline
+block\_6\_exp\_BN C3 & ( , 12, 12, 192)&  768    &     block\_6\_exp[0][0]             \\ \hline
+block\_6\_exp\_relu C4      & ( , 12, 12, 192)&  0      &     block\_6\_exp\_BN[0][0]          \\ \hline
+block\_6\_pad C1     & ( , 13, 13, 192)&  0      &     block\_6\_exp\_relu[0][0]        \\ \hline
+block\_6\_dw C6 & ( , 6, 6, 192)  &  1728   &     block\_6\_pad[0][0]                \\ \hline
+block\_6\_dw\_BN C3 & ( , 6, 6, 192)  &  768    &     block\_6\_dw[0][0]          \\ \hline
+block\_6\_dw\_relu C4   & ( , 6, 6, 192)  &  0      &     block\_6\_dw\_BN[0][0]       \\ \hline
+block\_6\_proj C2        & ( , 6, 6, 64)   &  12288  &     block\_6\_dw\_relu[0][0]     \\ \hline
+block\_6\_proj\_BN C3 & ( , 6, 6, 64)   &  256    &     block\_6\_proj[0][0]            \\ \hline
+block\_7\_exp C2         & ( , 6, 6, 384)  &  24576  &     block\_6\_proj\_BN[0][0]         \\ \hline
+block\_7\_exp\_BN C3 & ( , 6, 6, 384)  &  1536   &     block\_7\_exp[0][0]             \\ \hline
+block\_7\_exp\_relu C4      & ( , 6, 6, 384)  &  0      &     block\_7\_exp\_BN[0][0]          \\ \hline
+block\_7\_dw C6 & ( , 6, 6, 384)  &  3456   &     block\_7\_exp\_relu[0][0]        \\ \hline
+block\_7\_dw\_BN C3 & ( , 6, 6, 384)  &  1536   &     block\_7\_dw[0][0]          \\ \hline
+block\_7\_dw\_relu C4   & ( , 6, 6, 384)  &  0      &     block\_7\_dw\_BN[0][0]       \\ \hline
+block\_7\_proj C2        & ( , 6, 6, 64)   &  24576  &     block\_7\_dw\_relu[0][0]     \\ \hline
+block\_7\_proj\_BN C3 & ( , 6, 6, 64)   &  256    &     block\_7\_proj[0][0]            \\ \hline
+block\_7\_add (Add)               & ( , 6, 6, 64)   &  0      &     block\_6\_proj\_BN[0][0]         \\ 
+                                &                    &         &      block\_7\_proj\_BN[0][0]        \\ \hline
+block\_8\_exp C2         & ( , 6, 6, 384)  &  24576  &     block\_7\_add[0][0]                \\ \hline
+block\_8\_exp\_BN C3 & ( , 6, 6, 384)  &  1536   &     block\_8\_exp[0][0]             \\ \hline
+block\_8\_exp\_relu C4      & ( , 6, 6, 384)  &  0      &     block\_8\_exp\_BN[0][0]          \\ \hline
+block\_8\_dw C6 & ( , 6, 6, 384)  &  3456   &     block\_8\_exp\_relu[0][0]        \\ \hline
+block\_8\_dw\_BN C3 & ( , 6, 6, 384)  &  1536   &     block\_8\_dw[0][0]          \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|}
+block\_8\_dw\_relu C4   & ( , 6, 6, 384)  &  0      &     block\_8\_dw\_BN[0][0]       \\ \hline
+block\_8\_proj C2        & ( , 6, 6, 64)   &  24576  &     block\_8\_dw\_relu[0][0]     \\ \hline
+block\_8\_proj\_BN C3 & ( , 6, 6, 64)   &  256    &     block\_8\_proj[0][0]            \\ \hline
+block\_8\_add (Add)               & ( , 6, 6, 64)   &  0      &     block\_7\_add[0][0]                \\ 
+                                &                    &         &      block\_8\_proj\_BN[0][0]         \\ \hline
+block\_9\_exp C2         & ( , 6, 6, 384)  &  24576  &     block\_8\_add[0][0]                \\ \hline
+block\_9\_exp\_BN C3 & ( , 6, 6, 384)  &  1536   &     block\_9\_exp[0][0]             \\ \hline
+block\_9\_exp\_relu C4      & ( , 6, 6, 384)  &  0      &     block\_9\_exp\_BN[0][0]          \\ \hline
+block\_9\_dw C6 & ( , 6, 6, 384)  &  3456   &     block\_9\_exp\_relu[0][0]        \\ \hline
+block\_9\_dw\_BN C3 & ( , 6, 6, 384)  &  1536   &     block\_9\_dw[0][0]          \\ \hline
+block\_9\_dw\_relu C4   & ( , 6, 6, 384)  &  0      &     block\_9\_dw\_BN[0][0]       \\ \hline
+block\_9\_proj C2        & ( , 6, 6, 64)   &  24576  &     block\_9\_dw\_relu[0][0]     \\ \hline
+block\_9\_proj\_BN C3 & ( , 6, 6, 64)   &  256    &     block\_9\_proj[0][0]            \\ \hline
+block\_9\_add (Add)               & ( , 6, 6, 64)   &  0      &     block\_8\_add[0][0]                \\ 
+                                &                    &         &      block\_9\_proj\_BN[0][0]         \\ \hline
+block\_10\_exp C2        & ( , 6, 6, 384)  &  24576  &     block\_9\_add[0][0]                \\ \hline
+block\_10\_exp\_BN C3 & ( , 6, 6, 384)  &  1536   &     block\_10\_exp[0][0]            \\ \hline
+block\_10\_exp\_relu C4     & ( , 6, 6, 384)  &  0      &     block\_10\_exp\_BN[0][0]         \\ \hline
+block\_10\_dw C5 & ( , 6, 6, 384)  &  3456   &     block\_10\_exp\_relu[0][0]       \\ \hline
+block\_10\_dw\_BN C3 & ( , 6, 6, 384)  &  1536   &     block\_10\_dw[0][0]         \\ \hline
+block\_10\_dw\_relu C4  & ( , 6, 6, 384)  &  0      &     block\_10\_dw\_BN[0][0]      \\ \hline
+block\_10\_proj C2       & ( , 6, 6, 96)   &  36864  &     block\_10\_dw\_relu[0][0]    \\ \hline
+block\_10\_proj\_BN C3 & ( , 6, 6, 96)   &  384    &     block\_10\_proj[0][0]           \\ \hline
+block\_11\_exp C2        & ( , 6, 6, 576)  &  55296  &     block\_10\_proj\_BN[0][0]        \\ \hline
+block\_11\_exp\_BN C3 & ( , 6, 6, 576)  &  2304   &     block\_11\_exp[0][0]            \\ \hline
+block\_11\_exp\_relu C4     & ( , 6, 6, 576)  &  0      &     block\_11\_exp\_BN[0][0]         \\ \hline
+block\_11\_dw C5 & ( , 6, 6, 576)  &  5184   &     block\_11\_exp\_relu[0][0]       \\ \hline
+block\_11\_dw\_BN C3 & ( , 6, 6, 576)  &  2304   &     block\_11\_dw[0][0]         \\ \hline
+block\_11\_dw\_relu C4  & ( , 6, 6, 576)  &  0      &     block\_11\_dw\_BN[0][0]      \\ \hline
+block\_11\_proj C2       & ( , 6, 6, 96)   &  55296  &     block\_11\_dw\_relu[0][0]    \\ \hline
+block\_11\_proj\_BN C3 & ( , 6, 6, 96)   &  384    &     block\_11\_proj[0][0]           \\ \hline
+block\_11\_add (Add)              & ( , 6, 6, 96)   &  0      &     block\_10\_proj\_BN[0][0]        \\ 
+                                &                    &         &      block\_11\_proj\_BN[0][0]        \\ \hline
+block\_12\_exp C2        & ( , 6, 6, 576)  &  55296  &     block\_11\_add[0][0]               \\ \hline
+block\_12\_exp\_BN C3 & ( , 6, 6, 576)  &  2304   &     block\_12\_exp[0][0]            \\ \hline
+block\_12\_exp\_relu C4     & ( , 6, 6, 576)  &  0      &     block\_12\_exp\_BN[0][0]         \\ \hline
+block\_12\_dw C5 & ( , 6, 6, 576)  &  5184   &     block\_12\_exp\_relu[0][0]       \\ \hline
+block\_12\_dw\_BN C3 & ( , 6, 6, 576)  &  2304   &     block\_12\_dw[0][0]         \\ \hline
+block\_12\_dw\_relu C4  & ( , 6, 6, 576)  &  0      &     block\_12\_dw\_BN[0][0]      \\ \hline
+block\_12\_proj C2       & ( , 6, 6, 96)   &  55296  &     block\_12\_dw\_relu[0][0]    \\ \hline
+block\_12\_proj\_BN C3 & ( , 6, 6, 96)   &  384    &     block\_12\_proj[0][0]           \\ \hline
+
+\end{tabular}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|}
+
+block\_12\_add (Add)              & ( , 6, 6, 96)   &  0      &     block\_11\_add[0][0]               \\ 
+                                &                    &         &      block\_12\_proj\_BN[0][0]        \\ \hline
+block\_13\_exp C2        & ( , 6, 6, 576)  &  55296  &     block\_12\_add[0][0]               \\ \hline
+block\_13\_exp\_BN C3 & ( , 6, 6, 576)  &  2304   &     block\_13\_exp[0][0]            \\ \hline
+block\_13\_exp\_relu C4     & ( , 6, 6, 576)  &  0      &     block\_13\_exp\_BN[0][0]         \\ \hline
+block\_13\_pad C1    & ( , 7, 7, 576)  &  0      &     block\_13\_exp\_relu[0][0]       \\ \hline
+block\_13\_dw C5 & ( , 3, 3, 576)  &  5184   &     block\_13\_pad[0][0]               \\ \hline
+block\_13\_dw\_BN C3 & ( , 3, 3, 576)  &  2304   &     block\_13\_dw[0][0]         \\ \hline
+block\_13\_dw\_relu C4  & ( , 3, 3, 576)  &  0      &     block\_13\_dw\_BN[0][0]      \\ \hline
+block\_13\_proj C2       & ( , 3, 3, 160)  &  92160  &     block\_13\_dw\_relu[0][0]    \\ \hline
+block\_13\_proj\_BN C3 & ( , 3, 3, 160)  &  640    &     block\_13\_proj[0][0]           \\ \hline
+block\_14\_exp C2        & ( , 3, 3, 960)  &  153600 &     block\_13\_proj\_BN[0][0]        \\ \hline
+block\_14\_exp\_BN C3 & ( , 3, 3, 960)  &  3840   &     block\_14\_exp[0][0]            \\ \hline
+block\_14\_exp\_relu C4     & ( , 3, 3, 960)  &  0      &     block\_14\_exp\_BN[0][0]         \\ \hline
+block\_14\_dw C5 & ( , 3, 3, 960)  &  8640   &     block\_14\_exp\_relu[0][0]       \\ \hline
+block\_14\_dw\_BN C3 & ( , 3, 3, 960)  &  3840   &     block\_14\_dw[0][0]         \\ \hline
+block\_14\_dw\_relu C4  & ( , 3, 3, 960)  &  0      &     block\_14\_dw\_BN[0][0]      \\ \hline
+block\_14\_proj C2       & ( , 3, 3, 160)  &  153600 &     block\_14\_dw\_relu[0][0]    \\ \hline
+block\_14\_proj\_BN C3 & ( , 3, 3, 160)  &  640    &     block\_14\_proj[0][0]           \\ \hline
+block\_14\_add (Add)              & ( , 3, 3, 160)  &  0      &     block\_13\_proj\_BN[0][0]        \\ 
+                                  &                    &         &      block\_14\_proj\_BN[0][0]       \\ \hline
+block\_15\_exp C2        & ( , 3, 3, 960)  &  153600 &     block\_14\_add[0][0]               \\ \hline
+block\_15\_exp\_BN C3 & ( , 3, 3, 960)  &  3840   &     block\_15\_exp[0][0]            \\ \hline
+block\_15\_exp\_relu C4     & ( , 3, 3, 960)  &  0      &     block\_15\_exp\_BN[0][0]         \\ \hline
+block\_15\_dw C5 & ( , 3, 3, 960)  &  8640   &     block\_15\_exp\_relu[0][0]       \\ \hline
+block\_15\_dw\_BN C3 & ( , 3, 3, 960)  &  3840   &     block\_15\_dw[0][0]         \\ \hline
+block\_15\_dw\_relu C4  & ( , 3, 3, 960)  &  0      &     block\_15\_dw\_BN[0][0]      \\ \hline
+block\_15\_proj C2       & ( , 3, 3, 160)  &  153600 &     block\_15\_dw\_relu[0][0]    \\ \hline
+block\_15\_proj\_BN C3 & ( , 3, 3, 160)  &  640    &     block\_15\_proj[0][0]           \\ \hline
+block\_15\_add (Add)              & ( , 3, 3, 160)  &  0      &     block\_14\_add[0][0]               \\ 
+                                &                    &         &      block\_15\_proj\_BN[0][0]        \\ \hline
+block\_16\_exp C2        & ( , 3, 3, 960)  &  153600 &     block\_15\_add[0][0]               \\ \hline
+block\_16\_exp\_BN C3 & ( , 3, 3, 960)  &  3840   &     block\_16\_exp[0][0]            \\ \hline
+block\_16\_exp\_relu C4     & ( , 3, 3, 960)  &  0      &     block\_16\_exp\_BN[0][0]         \\ \hline
+block\_16\_dw C5 & ( , 3, 3, 960)  &  8640   &     block\_16\_exp\_relu[0][0]       \\ \hline
+block\_16\_dw\_BN C3 & ( , 3, 3, 960)  &  3840   &     block\_16\_dw[0][0]         \\ \hline
+block\_16\_dw\_relu C4  & ( , 3, 3, 960)  &  0      &     block\_16\_dw\_BN[0][0]      \\ \hline
+block\_16\_proj C2       & ( , 3, 3, 320)  &  307200 &     block\_16\_dw\_relu[0][0]    \\ \hline
+block\_16\_proj\_BN C3 & ( , 3, 3, 320)  &  1280   &     block\_16\_proj[0][0]           \\ \hline
+Conv\_1 C2                 & ( , 3, 3, 1280) &  409600 &     block\_16\_proj\_BN[0][0]        \\ \hline
+Conv\_1\_bn C3zation)  & ( , 3, 3, 1280) &  5120   &     Conv\_1[0][0]                     \\ \hline
+out\_relu C4                 & ( , 3, 3, 1280) &  0      &     Conv\_1\_bn[0][0]                  \\ \hline
+global\_average        & ( , 1280)       &  0      &     out\_relu[0][0]                   \\ \hline
+dense\_1 (Dense)                 & ( , 1024)       &  1311744&     global\_average[0][0] \\ \hline
+dense\_2 (Dense)                 & ( , 35)         &  35875  &     dense\_1[0][0]                    \\ \hline
+
+\end{tabular}
+\end{table}
+
+\end{document}
