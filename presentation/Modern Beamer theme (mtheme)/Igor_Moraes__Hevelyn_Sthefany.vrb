@@ -1,0 +1,9 @@
+\frametitle{Reconhecimento da Fala}
+  \begin{center}O reconhecimento de fala é uma tecnologia que procura identificar palavras faladas em um áudio e convertê-las em texto.\end{center}
+
+  \begin{figure}
+  \centering
+  \includegraphics[scale=0.5]{images/speechrec.png}
+    %\caption{Rotated square from
+    %\href{http://www.texample.net/tikz/examples/rotated-polygons/}{texample.net}.}
+  \end{figure}
