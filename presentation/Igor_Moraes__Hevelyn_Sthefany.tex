@@ -48,15 +48,21 @@
 
 
 \begin{frame}
-  \alert{Siri}, \alert{Open Mic+}, \alert{Siri}, \alert{Siri} são exemplos de aplicações que usam reconhecimento da fala.
+\includegraphics[scale=0.1]{images/siri.jpg} \hfill
+\includegraphics[scale=0.1]{images/okgoogle.jpg} \hfill
+\includegraphics[scale=0.1]{images/bank.jpg} \hfill
+\includegraphics[scale=0.1]{images/nuance.png} \\ \\
+  \alert{Siri}, \alert{Open Mic+}, \alert{Google Assistente}, \alert{Siri} são exemplos de aplicações que usam reconhecimento da fala.
 \end{frame}
 
 
 \begin{frame}{Reconhecimento com Espectrograma usando MobileNetV2}
-\includegraphics[scale=0.35]{images/process-11.png}
-\includegraphics[scale=0.15]{images/process-2.png}
-\includegraphics[scale=0.3]{images/process-3.png}
-\includegraphics[scale=0.01]{images/process-4.jpg}
+%\includegraphics[scale=0.35]{images/process-11.png}
+%\includegraphics[scale=0.15]{images/process-2.png}
+%\includegraphics[scale=0.3]{images/process-3.png}
+%\includegraphics[scale=0.01]{images/process-4.jpg}
+\centering
+\includegraphics[scale=0.2]{images/process.png}
 \end{frame}
 
 
@@ -113,7 +119,7 @@
 
 \begin{frame}{Gargalos Lineares}
 
-A última convolução de um bloco residual tem uma \alert{saída linear} antes de ser adicionada às ativações iniciais. Colocar isso no código é super simples, pois simplesmente descartamos a última função de ativação do bloco convolucional.
+A última convolução de um bloco residual tem uma \alert{saída linear} antes de ser adicionada às ativações iniciais. Simplesmente é descartado a última função de ativação do bloco convolucional.
 \end{frame}
 
 \section{Resultados} %---------------------------------------------------------------------------
